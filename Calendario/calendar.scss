@@ -1,0 +1,129 @@
+html, body {
+  font-family: 'Roboto', sans-serif;
+  font-size: 16px;
+  background: #eee;
+  margin: 0;
+}
+
+.calendar__monthwrapper {
+  margin: 0 auto;
+  width: calc(100% - 1rem);
+  header {
+    .calendar__monthlabel {
+      margin: 0;
+    }
+  }
+
+  .calendar__monthbody {
+    background: #FFF;
+    border: 1px solid #ddd;
+    .calendar__weekdays {
+
+      .calendar__lblday {
+        box-sizing: border-box;
+        border-right: 2px solid #ddd;
+        text-align: left;
+        padding: 0.2rem 0.5rem 0 0.5rem;
+        width: calc(100% / 5);
+      }
+    }
+
+    .calendar__weekrow {
+      align-items: stretch;
+      flex-flow: row wrap;
+      height: calc(100vh / 5);
+      justify-content: space-around;
+
+      .day {
+        border-bottom: 2px solid #ddd;
+        border-right: 2px solid #ddd;
+        box-sizing: border-box;
+        padding: 0.5rem 0 0.5rem 0.5rem;
+        width: calc(100% / 5);
+        &.emptyday {
+          background: rgba(255, 0, 0, .3);
+        }
+        &.today {
+          background: #1a5fff;
+          .calendar__daynumber {
+            color: #FFF;
+          }
+        }
+        .calendar__daynumber {
+          box-sizing: border-box;
+          display: block;
+          text-align: left;
+          max-height: 1rem;
+          padding-bottom: 0.3rem;
+        }
+        .droppable-container{
+          margin-top: 3px;
+          height: calc(100% - 2rem - 3px);
+          width: 100%;
+          overflow: hidden;
+          &.hover {
+            background: #f0f0f0;
+          }
+        }
+      }
+    }
+  }
+}
+
+
+.evento{
+  background: #ccc;
+  font-size: 0.8rem;
+  margin-bottom: 3px;
+  p{
+    margin: 0;
+    white-space: nowrap;
+  }
+}
+
+.currentday {
+  background: green;
+}
+
+.font0 {
+  font-size: 0;
+}
+
+.font0 > * {
+  font-size: 1rem;
+}
+
+#calendario {
+  margin: 0 auto;
+  /*width: calc(100% - 4rem);*/
+}
+
+.day {
+  height: 100%;
+}
+
+.droppable-container > * {
+  display: block;
+  width: 100%;
+}
+
+.day.hover {
+  background: aqua;
+}
+
+.day:first-child {
+  border-left: none;
+}
+
+.day:nth-child(6) {
+  border-right: none;
+}
+
+.inline-block {
+  display: inline-block;
+  vertical-align: top;
+}
+
+.hide {
+  display: none;
+}
