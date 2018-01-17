@@ -17,6 +17,14 @@ html, body {
   .calendar__monthbody {
     background: #FFF;
     border: 1px solid #ddd;
+    position: relative;
+    .calendar__dayover{
+      background: #FFF;
+      box-shadow: 1px 1px 1px #ccc;
+      padding: 0.4rem;
+      position: absolute;
+      width: calc(100vw / 5);
+    }
     .calendar__weekdays {
 
       .calendar__lblday {

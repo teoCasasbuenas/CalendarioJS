@@ -11,7 +11,14 @@ html, body {
     margin: 0; }
   .calendar__monthwrapper .calendar__monthbody {
     background: #FFF;
-    border: 1px solid #ddd; }
+    border: 1px solid #ddd;
+    position: relative; }
+    .calendar__monthwrapper .calendar__monthbody .calendar__dayover {
+      background: #FFF;
+      box-shadow: 1px 1px 1px #ccc;
+      padding: 0.4rem;
+      position: absolute;
+      width: calc(100vw / 5); }
     .calendar__monthwrapper .calendar__monthbody .calendar__weekdays .calendar__lblday {
       box-sizing: border-box;
       border-right: 2px solid #ddd;
