@@ -13,12 +13,6 @@ html, body {
     background: #FFF;
     border: 1px solid #ddd;
     position: relative; }
-    .calendar__monthwrapper .calendar__monthbody .calendar__dayover {
-      background: #FFF;
-      box-shadow: 1px 1px 1px #ccc;
-      padding: 0.4rem;
-      position: absolute;
-      width: calc(100vw / 5); }
     .calendar__monthwrapper .calendar__monthbody .calendar__weekdays .calendar__lblday {
       box-sizing: border-box;
       border-right: 2px solid #ddd;
@@ -55,6 +49,23 @@ html, body {
           overflow: hidden; }
           .calendar__monthwrapper .calendar__monthbody .calendar__weekrow .day .droppable-container.hover {
             background: #f0f0f0; }
+    .calendar__monthwrapper .calendar__monthbody .calendar__dayover {
+      background: #FFF;
+      border: none;
+      box-shadow: 0px 0px 5px #ccc;
+      height: auto;
+      padding: 0.4rem;
+      position: absolute;
+      width: calc(100vw / 5); }
+      .calendar__monthwrapper .calendar__monthbody .calendar__dayover header {
+        position: relative; }
+        .calendar__monthwrapper .calendar__monthbody .calendar__dayover header .lbl__fecha {
+          margin: 0 0 0.3rem 0; }
+        .calendar__monthwrapper .calendar__monthbody .calendar__dayover header .close__btn {
+          cursor: pointer;
+          position: absolute;
+          right: 0;
+          top: 0; }
 
 .evento {
   background: #ccc;

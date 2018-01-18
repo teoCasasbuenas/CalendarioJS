@@ -7,7 +7,8 @@ var Calendario = /** @class */ (function () {
             shortMonths: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'],
             dragData: 'data-id',
             draggableClass: 'dragClass',
-            dayClick: function () { }
+            dayClick: function () {
+            }
         };
         this.currDate = new Date();
         this.currDay = this.currDate.getDate();
@@ -77,10 +78,33 @@ var Calendario = /** @class */ (function () {
         $('#calendario').on('click', '.more-handler', function (evt) {
             evt.stopPropagation();
             evt.preventDefault();
-            var moreHand = $('<div class="calendar__dayover"></div>');
-            console.log(this.offsetLeft, this.offsetTop);
-            moreHand.css({ 'left': this.offsetLeft, 'top': this.offsetTop }).attr({ 'data-yy-mm-dd': $(this).closest('.day').attr('data-yy-mm-dd') });
-            $(this).closest('.calendar__monthbody').append(moreHand.html('Fecha'));
+            var moreHand = $('<div class="calendar__dayover"><header><h4 class="lbl__fecha"></h4><i class="fa fa-close close__btn"></i></header></div>'), parentDay = $(this).closest('.day'), droppableClone = parentDay.find('.droppable-container').clone();
+            droppableClone.find('.hide').each(function () {
+                $(this).removeClass('hide');
+            });
+            moreHand.css({
+                'left': this.offsetLeft,
+                'top': this.offsetTop
+            }).attr({ 'data-yy-mm-dd': parentDay.attr('data-yy-mm-dd') }).addClass('day').find('.lbl__fecha').html(parentDay.attr('data-yy-mm-dd'));
+            $(this).closest('.calendar__monthbody').append(moreHand.append(droppableClone));
+            moreHand.on('click', '.fa-close', function () {
+                moreHand.fadeOut(250, function () {
+                    moreHand.remove();
+                });
+            });
+            droppableClone.on('dragstart', '.' + that.config.draggableClass, function (evt) {
+                setTimeout(function () {
+                    moreHand.fadeOut(250, function () {
+                        moreHand.remove();
+                    });
+                }, 200);
+            });
+        });
+        $('#calendario').on('drop', '.day', function (evt) {
+            evt.preventDefault();
+            evt.stopPropagation();
+            that.checkDroppableOverflow(that.dragOrigin.find('.droppable-container').get(0));
+            that.checkDroppableOverflow($(this).find('.droppable-container').get(0));
         });
     };
     /**
@@ -90,25 +114,27 @@ var Calendario = /** @class */ (function () {
      */
     Calendario.prototype.on = function (string, callback) {
         var that = this;
-        $('#calendario').on('drop', '.day', function (evt) {
-            evt.preventDefault();
-            //TODO: Verificar los hijos que sean del mismo parent para modificar el comportamiento del drop.
-            if ($(this).hasClass('prevmonth')) {
-                return;
-            }
-            else {
-                var data = evt.originalEvent.dataTransfer.getData('text');
-                $(this).find('.droppable-container').append(document.querySelector("[" + that.config.dragData + "=" + data + "]"));
-                $(this).find("[" + that.config.dragData + "=" + data + "]").css({ 'cursor': 'pointer' });
-                $('.droppable-container').removeClass('hover');
-                callback(this, $('[' + that.config.dragData + '=' + data + ']'), $(this).attr('data-yy-mm-dd'));
-                that.checkDroppableOverflow(that.dragOrigin.find('.droppable-container').get(0));
-                that.checkDroppableOverflow($(this).find('.droppable-container').get(0));
-            }
-        });
+        if (string === 'drop') {
+            $('#calendario').on('drop', '.day', function (evt) {
+                evt.preventDefault();
+                //TODO: Verificar los hijos que sean del mismo parent para modificar el comportamiento del drop.
+                if ($(this).hasClass('prevmonth')) {
+                    return;
+                }
+                else {
+                    var data = evt.originalEvent.dataTransfer.getData('text');
+                    $(this).find('.droppable-container').append(document.querySelector("[" + that.config.dragData + "=" + data + "]"));
+                    $(this).find("[" + that.config.dragData + "=" + data + "]").css({ 'cursor': 'pointer' });
+                    $('.droppable-container').removeClass('hover');
+                    callback(this, $('[' + that.config.dragData + '=' + data + ']'), $(this).attr('data-yy-mm-dd'));
+                    that.checkDroppableOverflow(that.dragOrigin.find('.droppable-container').get(0));
+                    that.checkDroppableOverflow($(this).find('.droppable-container').get(0));
+                }
+            });
+        }
         if (string === 'dayclick') {
-            $('#calendario').on('click', '.day:not(.emptyday)', function () {
-                callback(this, $(this).attr('data-yy-mm-dd'));
+            $('#calendario').on('click', '.day:not(.emptyday):not(.calendar__dayover)', function (evt) {
+                callback(this, $(this).attr('data-yy-mm-dd'), evt);
             });
         }
     };
@@ -180,6 +206,9 @@ var Calendario = /** @class */ (function () {
      * @param el - DOM Object para verificar.
      */
     Calendario.prototype.checkDroppableOverflow = function (el) {
+        if ($(el).closest('.day').hasClass('calendar__dayover')) {
+            el = $('.day[data-yy-mm-dd=' + $(el).closest('.day').attr('data-yy-mm-dd') + ']').find('.droppable-container').get(0);
+        }
         $(el).closest('.day').find('a').addClass('hide');
         if ($(el).innerHeight() <= el.scrollHeight) {
             //Los elementos están ocultos en el overflow

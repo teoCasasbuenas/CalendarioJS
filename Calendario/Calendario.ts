@@ -10,7 +10,8 @@ class Calendario {
         shortMonths: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'],
         dragData: 'data-id',
         draggableClass: 'dragClass',
-        dayClick: function (){}
+        dayClick: function () {
+        }
     };
     private config: any;
     private currDate: any = new Date();
@@ -70,6 +71,7 @@ class Calendario {
      * @constructor
      */
     private dragOrigin;
+
     private DragEvents() {
         let that = this;
         $('#calendario').on('dragstart', '.' + that.config.draggableClass, function (evt) {
@@ -95,13 +97,45 @@ class Calendario {
         });
 
 
-        $('#calendario').on('click', '.more-handler', function (evt){
+        $('#calendario').on('click', '.more-handler', function (evt) {
             evt.stopPropagation();
             evt.preventDefault();
-            let moreHand = $('<div class="calendar__dayover"></div>');
-            console.log(this.offsetLeft, this.offsetTop);
-            moreHand.css({'left': this.offsetLeft, 'top': this.offsetTop}).attr({'data-yy-mm-dd': $(this).closest('.day').attr('data-yy-mm-dd')});
-            $(this).closest('.calendar__monthbody').append(moreHand.html('Fecha'));
+            let moreHand = $('<div class="calendar__dayover"><header><h4 class="lbl__fecha"></h4><i class="fa fa-close close__btn"></i></header></div>'),
+                parentDay = $(this).closest('.day'),
+                droppableClone = parentDay.find('.droppable-container').clone();
+
+            droppableClone.find('.hide').each(function () {
+                $(this).removeClass('hide');
+            });
+
+            moreHand.css({
+                'left': this.offsetLeft,
+                'top': this.offsetTop
+            }).attr({'data-yy-mm-dd': parentDay.attr('data-yy-mm-dd')}).addClass('day').find('.lbl__fecha').html(parentDay.attr('data-yy-mm-dd'));
+
+            $(this).closest('.calendar__monthbody').append(moreHand.append(droppableClone));
+
+            moreHand.on('click', '.fa-close', function (){
+                moreHand.fadeOut(250, function () {
+                    moreHand.remove();
+                });
+            });
+
+            droppableClone.on('dragstart', '.' + that.config.draggableClass, function (evt) {
+                setTimeout(function () {
+                    moreHand.fadeOut(250, function () {
+                        moreHand.remove();
+                    });
+                }, 200);
+
+            });
+        });
+
+        $('#calendario').on('drop', '.day', function (evt) {
+            evt.preventDefault();
+            evt.stopPropagation();
+            that.checkDroppableOverflow(that.dragOrigin.find('.droppable-container').get(0));
+            that.checkDroppableOverflow($(this).find('.droppable-container').get(0));
         });
     }
 
@@ -113,25 +147,27 @@ class Calendario {
 
     on(string, callback) {
         let that = this;
-        $('#calendario').on('drop', '.day', function (evt) {
-            evt.preventDefault();
-            //TODO: Verificar los hijos que sean del mismo parent para modificar el comportamiento del drop.
-            if ($(this).hasClass('prevmonth')) {
-                return;
-            } else {
-                var data = evt.originalEvent.dataTransfer.getData('text');
-                $(this).find('.droppable-container').append(document.querySelector(`[${that.config.dragData}=${data}]`));
-                $(this).find(`[${that.config.dragData}=${data}]`).css({'cursor': 'pointer'});
-                $('.droppable-container').removeClass('hover');
-                callback(this, $('[' + that.config.dragData + '=' + data + ']'), $(this).attr('data-yy-mm-dd'));
-                that.checkDroppableOverflow(that.dragOrigin.find('.droppable-container').get(0));
-                that.checkDroppableOverflow($(this).find('.droppable-container').get(0));
-            }
-        });
+        if (string === 'drop') {
+            $('#calendario').on('drop', '.day', function (evt) {
+                evt.preventDefault();
+                //TODO: Verificar los hijos que sean del mismo parent para modificar el comportamiento del drop.
+                if ($(this).hasClass('prevmonth')) {
+                    return;
+                } else {
+                    var data = evt.originalEvent.dataTransfer.getData('text');
+                    $(this).find('.droppable-container').append(document.querySelector(`[${that.config.dragData}=${data}]`));
+                    $(this).find(`[${that.config.dragData}=${data}]`).css({'cursor': 'pointer'});
+                    $('.droppable-container').removeClass('hover');
+                    callback(this, $('[' + that.config.dragData + '=' + data + ']'), $(this).attr('data-yy-mm-dd'));
+                    that.checkDroppableOverflow(that.dragOrigin.find('.droppable-container').get(0));
+                    that.checkDroppableOverflow($(this).find('.droppable-container').get(0));
+                }
+            });
+        }
 
-        if(string === 'dayclick'){
-            $('#calendario').on('click', '.day:not(.emptyday)', function (){
-                callback(this, $(this).attr('data-yy-mm-dd'));
+        if (string === 'dayclick') {
+            $('#calendario').on('click', '.day:not(.emptyday):not(.calendar__dayover)', function (evt) {
+                callback(this, $(this).attr('data-yy-mm-dd'), evt);
             });
         }
     }
@@ -142,7 +178,7 @@ class Calendario {
             //initWeekDay = this.startDate.format('d'),
             initWeekDay = moment({year: year, month: month, day: 1}).format('d'),
             //Templating variables.
-            monthWrapper = $(document.createElement('div')).addClass('calendar__monthwrapper calendar__month').attr({'data-yy-mm': year + '-' + (month < 9 ? '0':'') + (month + 1)}),
+            monthWrapper = $(document.createElement('div')).addClass('calendar__monthwrapper calendar__month').attr({'data-yy-mm': year + '-' + (month < 9 ? '0' : '') + (month + 1)}),
             monthHeader = $(document.createElement('header')),
             monthLabel = $(document.createElement('h2')).addClass('calendar__monthlabel widht100').html(this.config.months[month] + ' ' + year),
             monthWeekdays = this.monthHead.clone(),
@@ -166,23 +202,23 @@ class Calendario {
         while (initWeekDay > 0) {
             let emptyDate = $("<div class='inline-block prevmonth day emptyday'></div>");
             currWeekrow.addClass('font0').append(emptyDate);
-            emptyDate.addClass((initWeekDay == 1 || initWeekDay == 6) ? 'hide': '');
+            emptyDate.addClass((initWeekDay == 1 || initWeekDay == 6) ? 'hide' : '');
             initWeekDay--;
         }
 
         while (i <= daysInMonth) {
             let currDay = $("<div class='inline-block day" + (moment().get('date') == i && (moment().get('month') == month) ? ' today' : '') + "'><span class='calendar__daynumber'>" + i + "</span><div class='droppable-container'></div><a class='hide more-handler' href='#'>Más</a></div>").attr({'data-yy-mm-dd': `${year}-${month < 9 ? '0' : ''}${(month + 1)}-${i < 10 ? '0' : ''}${i}`});
-            if(weekDayControl > 6){
+            if (weekDayControl > 6) {
                 monthBody.append(currWeekrow);
                 currWeekrow = weekRowWrapper.clone();
                 weekDayControl = 0;
             }
             currWeekrow.append(currDay);
-            currDay.addClass((weekDayControl == 0 || weekDayControl == 6) ? 'hide': '');
-            if(i == daysInMonth && weekDayControl <= 6){
+            currDay.addClass((weekDayControl == 0 || weekDayControl == 6) ? 'hide' : '');
+            if (i == daysInMonth && weekDayControl <= 6) {
                 currWeekrow.append(currDay);
                 weekDayControl == currWeekrow.find('.day').length;
-                while(weekDayControl > 0 && weekDayControl < 5){
+                while (weekDayControl > 0 && weekDayControl < 5) {
                     currWeekrow.append("<div class='inline-block nextmonth day emptyday'></div>");
                     weekDayControl++;
                 }
@@ -223,25 +259,28 @@ class Calendario {
      * cantidad en en vínculo que mostrara el conternido
      * @param el - DOM Object para verificar.
      */
-    checkDroppableOverflow(el){
+    checkDroppableOverflow(el) {
+        if($(el).closest('.day').hasClass('calendar__dayover')){
+            el = $('.day[data-yy-mm-dd=' + $(el).closest('.day').attr('data-yy-mm-dd') + ']').find('.droppable-container').get(0);
+        }
         $(el).closest('.day').find('a').addClass('hide');
-        if($(el).innerHeight() <= el.scrollHeight){
+        if ($(el).innerHeight() <= el.scrollHeight) {
             //Los elementos están ocultos en el overflow
             //TODO: Calcular los elementos ocultos para alimentar el 'más'.
             let elementsHeight = 0,
                 hiddenCount = 0;
-            $(el).find('> *').each(function (){
+            $(el).find('> *').each(function () {
                 //console.log('entra', this);
                 $(this).removeClass('hide');
                 elementsHeight += $(this).outerHeight(true);
 
-                if(elementsHeight > $(el).innerHeight()){
+                if (elementsHeight > $(el).innerHeight()) {
                     $(this).addClass('hide');
                     hiddenCount++;
                     $(el).closest('.day').find('a').removeClass('hide').html(`${hiddenCount} más`);
                 }
             });
-        }else{
+        } else {
             //console.log('Ocultar el elemento');
             $(el).closest('.day').find('a').addClass('hide');
         }
