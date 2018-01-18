@@ -33,9 +33,9 @@ html, body {
         .calendar__monthwrapper .calendar__monthbody .calendar__weekrow .day.emptyday {
           background: rgba(255, 0, 0, 0.3); }
         .calendar__monthwrapper .calendar__monthbody .calendar__weekrow .day.today {
-          background: #1a5fff; }
+          border: 1px solid #1a5fff; }
           .calendar__monthwrapper .calendar__monthbody .calendar__weekrow .day.today .calendar__daynumber {
-            color: #FFF; }
+            color: #1a5fff; }
         .calendar__monthwrapper .calendar__monthbody .calendar__weekrow .day .calendar__daynumber {
           box-sizing: border-box;
           display: block;
@@ -54,13 +54,13 @@ html, body {
       border: none;
       box-shadow: 0px 0px 5px #ccc;
       height: auto;
-      padding: 0.4rem;
+      padding: 0.8rem 0.5rem;
       position: absolute;
       width: calc(100vw / 5); }
       .calendar__monthwrapper .calendar__monthbody .calendar__dayover header {
         position: relative; }
         .calendar__monthwrapper .calendar__monthbody .calendar__dayover header .lbl__fecha {
-          margin: 0 0 0.3rem 0; }
+          margin: 0 0 0.5rem 0; }
         .calendar__monthwrapper .calendar__monthbody .calendar__dayover header .close__btn {
           cursor: pointer;
           position: absolute;

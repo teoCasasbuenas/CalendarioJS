@@ -108,12 +108,16 @@ class Calendario {
                 $(this).removeClass('hide');
             });
 
+            $(this).closest('.calendar__monthbody').append(moreHand.append(droppableClone));
+
+            var positionX = parentDay.get(0).offsetLeft - ((moreHand.outerWidth(true) - parentDay.outerWidth(true)) / 2),
+                positionY = parentDay.get(0).offsetTop - ((moreHand.outerHeight(true) - parentDay.outerHeight(true)) / 2);
+
             moreHand.css({
-                'left': this.offsetLeft,
-                'top': this.offsetTop
+                'left': positionX,
+                'top': positionY
             }).attr({'data-yy-mm-dd': parentDay.attr('data-yy-mm-dd')}).addClass('day').find('.lbl__fecha').html(parentDay.attr('data-yy-mm-dd'));
 
-            $(this).closest('.calendar__monthbody').append(moreHand.append(droppableClone));
 
             moreHand.on('click', '.fa-close', function (){
                 moreHand.fadeOut(250, function () {

@@ -82,11 +82,12 @@ var Calendario = /** @class */ (function () {
             droppableClone.find('.hide').each(function () {
                 $(this).removeClass('hide');
             });
-            moreHand.css({
-                'left': this.offsetLeft,
-                'top': this.offsetTop
-            }).attr({ 'data-yy-mm-dd': parentDay.attr('data-yy-mm-dd') }).addClass('day').find('.lbl__fecha').html(parentDay.attr('data-yy-mm-dd'));
             $(this).closest('.calendar__monthbody').append(moreHand.append(droppableClone));
+            var positionX = parentDay.get(0).offsetLeft - ((moreHand.outerWidth(true) - parentDay.outerWidth(true)) / 2), positionY = parentDay.get(0).offsetTop - ((moreHand.outerHeight(true) - parentDay.outerHeight(true)) / 2);
+            moreHand.css({
+                'left': positionX,
+                'top': positionY
+            }).attr({ 'data-yy-mm-dd': parentDay.attr('data-yy-mm-dd') }).addClass('day').find('.lbl__fecha').html(parentDay.attr('data-yy-mm-dd'));
             moreHand.on('click', '.fa-close', function () {
                 moreHand.fadeOut(250, function () {
                     moreHand.remove();

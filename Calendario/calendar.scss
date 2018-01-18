@@ -45,9 +45,9 @@ html, body {
           background: rgba(255, 0, 0, .3);
         }
         &.today {
-          background: #1a5fff;
+          border: 1px solid #1a5fff;
           .calendar__daynumber {
-            color: #FFF;
+            color: #1a5fff;
           }
         }
         .calendar__daynumber {
@@ -74,13 +74,13 @@ html, body {
       border: none;
       box-shadow: 0px 0px 5px #ccc;
       height: auto;
-      padding: 0.4rem;
+      padding: 0.8rem 0.5rem;
       position: absolute;
       width: calc(100vw / 5);
       header {
         position: relative;
         .lbl__fecha {
-          margin: 0 0 0.3rem 0;
+          margin: 0 0 0.5rem 0;
         }
 
         .close__btn{
