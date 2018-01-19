@@ -61,10 +61,10 @@ class Calendario {
             tempDate.add(1, 'month');
         }
 
+        this.RegisterEvents();
+
         this.DragEvents();
 
-
-        this.RegisterEvents();
     }
 
     /**
@@ -98,9 +98,42 @@ class Calendario {
         });
 
 
+
+        $('#calendario').on('drop', '.day', function (evt) {
+            evt.preventDefault();
+            evt.stopPropagation();
+            //TODO: Verificar los hijos que sean del mismo parent para modificar el comportamiento del drop.
+            if ($(this).hasClass('prevmonth')) {
+                return;
+            } else {
+                var data = evt.originalEvent.dataTransfer.getData('text');
+                $(this).find('.droppable-container').append(document.querySelector(`[${that.config.dragData}=${data}]`));
+                $(this).find(`[${that.config.dragData}=${data}]`).css({'cursor': 'pointer'});
+                $('.droppable-container').removeClass('hover');
+                // callback(this, $('[' + that.config.dragData + '=' + data + ']'), $(this).attr('data-yy-mm-dd'));
+                that.checkDroppableOverflow(that.dragOrigin.find('.droppable-container').get(0));
+                that.checkDroppableOverflow($(this).find('.droppable-container').get(0));
+            }
+            //
+            // that.checkDroppableOverflow(that.dragOrigin.find('.droppable-container').get(0));
+            // that.checkDroppableOverflow($(this).find('.droppable-container').get(0));
+        });
+
+
+    }
+
+
+    RegisterEvents() {
+        console.log('aqui');
+        let that = this;
+        // $('#calendario').on('click', '.day:not(.emptyday):not(.calendar__dayover)', function (evt){
+        //     $('#calendario').trigger('dayclick');
+        // });
+
         $('#calendario').on('click', '.more-handler', function (evt) {
             evt.stopPropagation();
             evt.preventDefault();
+            console.log('more hand')
             let moreHand = $('<div class="calendar__dayover"><header><h4 class="lbl__fecha"></h4><i class="fa fa-close close__btn"></i></header></div>'),
                 parentDay = $(this).closest('.day'),
                 droppableClone = parentDay.find('.droppable-container').clone();
@@ -136,29 +169,13 @@ class Calendario {
             });
         });
 
-        $('#calendario').on('drop', '.day', function (evt) {
-            evt.preventDefault();
-            evt.stopPropagation();
-            that.checkDroppableOverflow(that.dragOrigin.find('.droppable-container').get(0));
-            that.checkDroppableOverflow($(this).find('.droppable-container').get(0));
-        });
-
-
-    }
-
-
-    RegisterEvents() {
-        console.log('aqui');
-        let that = this;
-        // $('#calendario').on('click', '.day:not(.emptyday):not(.calendar__dayover)', function (evt){
-        //     $('#calendario').trigger('dayclick');
-        // });
-
         $('.day').on('dayclick', that.DayClick);
     }
 
 
     DayClick(e, target, fecha, callback) {
+        e.preventDefault();
+        e.stopPropagation();
         // console.log('target', target);
         // console.log('fecha', fecha);
         // console.log('e', e);
@@ -191,12 +208,12 @@ class Calendario {
         }
 
         if (string === 'dayclick') {
-            $('#calendario').off('click').on('click', '.day:not(.emptyday):not(.calendar__dayover)', function (evt) {
+            $('#calendario').on('click', '.droppable-container'/*'.day:not(.emptyday):not(.calendar__dayover):not(.more-handler)'*/, function (evt) {
+                evt.stopPropagation();
+                evt.preventDefault();
                 let target = this,
-                    fecha = $(this).attr('data-yy-mm-dd');
-                $(this).trigger('dayclick', [target, fecha, callback])
-                /*'.day:not(.emptyday):not(.calendar__dayover)', function (evt) {
-                                callback(this, $(this).attr('data-yy-mm-dd'), evt);*/
+                    fecha = $(this).closest('.day').attr('data-yy-mm-dd');
+                $(this).trigger('dayclick', [target, fecha, callback]);
             });
         }
     }
@@ -277,6 +294,10 @@ class Calendario {
      * @param date
      */
     addObject(obj, date) {
+        if(typeof date == 'undefined' || date.length == 0){
+            console.error('La no está definida para el objeto. El formato debe ser yyyy-mm-dd', obj);
+            return;
+        }
         if (obj instanceof jQuery) {
             $('#calendario').find(`.day[data-yy-mm-dd=${date}]`).find('.droppable-container').append(obj.css({'cursor': 'pointer'}));
             this.checkDroppableOverflow($('#calendario').find(`.day[data-yy-mm-dd=${date}]`).find('.droppable-container').get(0));
@@ -289,6 +310,11 @@ class Calendario {
      * @param el - DOM Object para verificar.
      */
     checkDroppableOverflow(el) {
+        if(!el || typeof el == 'undefined'){
+
+            console.error('El elemento no está definido');
+            return;
+        }
         if ($(el).closest('.day').hasClass('calendar__dayover')) {
             el = $('.day[data-yy-mm-dd=' + $(el).closest('.day').attr('data-yy-mm-dd') + ']').find('.droppable-container').get(0);
         }
@@ -315,136 +341,3 @@ class Calendario {
         }
     }
 }
-
-
-// //Variables to be used later.  Place holders right now.
-// var padding = "";
-// var totalFeb = "";
-// var i = 1;
-// var testing = "";
-//
-// var current = new Date("May 13, 2018");
-// var cmonth = current.getMonth();
-// var day = current.getDate();
-// var year = current.getFullYear();
-// var tempMonth = month + 1; //+1; //Used to match up the current month with the correct start date.
-// var prevMonth = month - 1;
-//
-// //Determing if Feb has 28 or 29 days in it.
-// if (month == 1) {
-//     if ((year % 100 !== 0) && (year % 4 === 0) || (year % 400 === 0)) {
-//         totalFeb = 29;
-//     } else {
-//         totalFeb = 28;
-//     }
-// }
-//
-// //////////////////////////////////////////
-// // Setting up arrays for the name of    //
-// // the	months, days, and the number of	//
-// // days in the month.                   //
-// //////////////////////////////////////////
-//
-// var monthNames = ["Jan", "Feb", "March", "April", "May", "June", "July", "Aug", "Sept", "Oct", "Nov", "Dec"];
-// var dayNames = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thrusday", "Friday", "Saturday"];
-// var totalDays = ["31", totalFeb.toString(), "31", "30", "31", "30", "31", "31", "30", "31", "30", "31"];
-//
-// //////////////////////////////////////////
-// // Temp values to get the number of days//
-// // in current month, and previous month.//
-// // Also getting the day of the week.	//
-// //////////////////////////////////////////
-//
-// var tempDate = new Date(tempMonth + ' 1 ,' + year);
-// var tempweekday = tempDate.getDay();
-// var tempweekday2 = tempweekday;
-// var dayAmount = totalDays[month];
-// // var preAmount = totalDays[prevMonth] - tempweekday + 1;
-//
-// //////////////////////////////////////////////////
-// // After getting the first day of the week for	//
-// // the month, padding the other days for that	//
-// // week with the previous months days.  IE, if	//
-// // the first day of the week is on a Thursday,	//
-// // then this fills in Sun - Wed with the last	//
-// // months dates, counting down from the last	//
-// // day on Wed, until Sunday.                    //
-// //////////////////////////////////////////////////
-//
-// while (tempweekday > 0) {
-//     padding += "<div class='premonth'></div>";
-//     //preAmount++;
-//     tempweekday--;
-// }
-//
-// //////////////////////////////////////////////////
-// // Filling in the calendar with the current     //
-// // month days in the correct location along.    //
-// //////////////////////////////////////////////////
-//
-// while (i <= dayAmount) {
-//
-//     //////////////////////////////////////////
-//     // Determining when to start a new row	//
-//     //////////////////////////////////////////
-//
-//     if (tempweekday2 > 6) {
-//         tempweekday2 = 0;
-//         padding += "</div><div>";
-//     }
-//
-//     //////////////////////////////////////////////////////////////////////////////////////////////////
-//     // checking to see if i is equal to the current day, if so then we are making the color of //
-//     //that cell a different color using CSS. Also adding a rollover effect to highlight the  //
-//     //day the user rolls over. This loop creates the acutal calendar that is displayed.		//
-//     //////////////////////////////////////////////////////////////////////////////////////////////////
-//
-//     if (i == day && month == cmonth) {
-//         padding += "<div class='inline-block' class='currentday'  onMouseOver='this.style.background=\"#00FF00\";
-//                    this.style.color=\"#FFFFFF\"' onMouseOut='this.style.background=\"#FFFFFF\"; this.style.color=\"#00FF00\"'>" + i + "</div>";
-//     } else {
-//         padding += "<div class='currentmonth' onMouseOver='this.style.background=\"#00FF00\"' onMouseOut='this.style.background=\"#FFFFFF\"'>" + i + "</div>";
-//
-//     }
-//
-//     tempweekday2++;
-//     i++;
-// }
-//
-//
-// /////////////////////////////////////////
-// // Ouptputing the calendar onto the	//
-// // site.  Also, putting in the month	//
-// // name and days of the week.		//
-// /////////////////////////////////////////
-//
-// // var calendarTable = "<table class='calendar'> <tr class='currentmonth'><th colspan='7'>" + monthNames[month] + " " + year + "</th></tr>";
-// // calendarTable += "<tr class='weekdays'>  <td>Sun</td>  <td>Mon</td> <td>Tues</td> <td>Wed</td> <td>Thurs</td> <td>Fri</td> <td>Sat</td> </tr>";
-// // calendarTable += "<tr>";
-// // calendarTable += padding;
-// // calendarTable += "</tr></table>";
-//
-// var calendarHeader = "<header>"
-//     + "<div class='font0'>"
-//     + "<div class='inline-block'>&lang;</div>"
-//     + "<div class='inline-block'>" + monthNames[month] + "</div>"
-//     + "<div class='inline-block'>&rang;</div>"
-//     + "</div>"
-//     + "<div class='font0'>"
-//     + "<div class='inline-block'>Dom</div>"
-//     + "<div class='inline-block'>Lun</div>"
-//     + "<div class='inline-block'>Mar</div>"
-//     + "<div class='inline-block'>Mie</div>"
-//     + "<div class='inline-block'>Jue</div>"
-//     + "<div class='inline-block'>Vie</div>"
-//     + "<div class='inline-block'>Sab</div>"
-//     + "</div>"
-// "</header>";
-// document.getElementById("calendar").innerHTML += calendarHeader + padding;
-// }
-//
-// function go12() {
-//     for (i = 0; i < 12; i++) {
-//         calendar(i);
-//     }
-// }
