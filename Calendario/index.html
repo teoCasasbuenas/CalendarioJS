@@ -45,9 +45,11 @@
     $('#remove').on('click', function () {
         $("#tar2").remove();
     });
-    cal.on('drop', function (target, el, fecha) {
-        el.find('.fecha').html(fecha)
-    });
+
+
+    // cal.on('drop', function (target, el, fecha) {
+    //     el.find('.fecha').html(fecha)
+    // });
     var control = 8;
     cal.on('dayclick', function (target, fecha, evt){
         var newObj = $("<div data-id-evento='tar" + control + "' class='evento' id='tar" + control + "' draggable='true'><p>" + control + " Este es un nuevo evento creado desde el día</p></div>");

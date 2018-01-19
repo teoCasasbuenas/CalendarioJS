@@ -50,16 +50,24 @@ html, body {
             color: #1a5fff;
           }
         }
-        .calendar__daynumber {
-          box-sizing: border-box;
-          display: block;
-          text-align: left;
-          max-height: 1rem;
-          padding-bottom: 0.3rem;
+        .dayheader {
+          position: relative;
+          .calendar__daynumber {
+            box-sizing: border-box;
+            display: inline-block;
+            text-align: left;
+            max-height: 1rem;
+            padding-bottom: 0.3rem;
+          }
+          .more-handler{
+            position: absolute;
+            right: 0;
+            top:0;
+          }
         }
         .droppable-container {
           margin-top: 3px;
-          height: calc(100% - 2rem - 3px);
+          height: calc(100% - 1rem);
           width: 100%;
           overflow: hidden;
           &.hover {
@@ -83,7 +91,7 @@ html, body {
           margin: 0 0 0.5rem 0;
         }
 
-        .close__btn{
+        .close__btn {
           cursor: pointer;
           position: absolute;
           right: 0;

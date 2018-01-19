@@ -9,9 +9,7 @@ class Calendario {
         months: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'],
         shortMonths: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'],
         dragData: 'data-id',
-        draggableClass: 'dragClass',
-        dayClick: function () {
-        }
+        draggableClass: 'dragClass'
     };
     private config: any;
     private currDate: any = new Date();
@@ -64,6 +62,9 @@ class Calendario {
         }
 
         this.DragEvents();
+
+
+        this.RegisterEvents();
     }
 
     /**
@@ -119,7 +120,7 @@ class Calendario {
             }).attr({'data-yy-mm-dd': parentDay.attr('data-yy-mm-dd')}).addClass('day').find('.lbl__fecha').html(parentDay.attr('data-yy-mm-dd'));
 
 
-            moreHand.on('click', '.fa-close', function (){
+            moreHand.on('click', '.fa-close', function () {
                 moreHand.fadeOut(250, function () {
                     moreHand.remove();
                 });
@@ -141,6 +142,27 @@ class Calendario {
             that.checkDroppableOverflow(that.dragOrigin.find('.droppable-container').get(0));
             that.checkDroppableOverflow($(this).find('.droppable-container').get(0));
         });
+
+
+    }
+
+
+    RegisterEvents() {
+        console.log('aqui');
+        let that = this;
+        // $('#calendario').on('click', '.day:not(.emptyday):not(.calendar__dayover)', function (evt){
+        //     $('#calendario').trigger('dayclick');
+        // });
+
+        $('.day').on('dayclick', that.DayClick);
+    }
+
+
+    DayClick(e, target, fecha, callback) {
+        // console.log('target', target);
+        // console.log('fecha', fecha);
+        // console.log('e', e);
+        callback(target, fecha, e);
     }
 
     /**
@@ -148,7 +170,6 @@ class Calendario {
      * @param string - Define el tipo de acción que se desea atar.
      * @param callback
      */
-
     on(string, callback) {
         let that = this;
         if (string === 'drop') {
@@ -170,8 +191,12 @@ class Calendario {
         }
 
         if (string === 'dayclick') {
-            $('#calendario').on('click', '.day:not(.emptyday):not(.calendar__dayover)', function (evt) {
-                callback(this, $(this).attr('data-yy-mm-dd'), evt);
+            $('#calendario').off('click').on('click', '.day:not(.emptyday):not(.calendar__dayover)', function (evt) {
+                let target = this,
+                    fecha = $(this).attr('data-yy-mm-dd');
+                $(this).trigger('dayclick', [target, fecha, callback])
+                /*'.day:not(.emptyday):not(.calendar__dayover)', function (evt) {
+                                callback(this, $(this).attr('data-yy-mm-dd'), evt);*/
             });
         }
     }
@@ -211,7 +236,7 @@ class Calendario {
         }
 
         while (i <= daysInMonth) {
-            let currDay = $("<div class='inline-block day" + (moment().get('date') == i && (moment().get('month') == month) ? ' today' : '') + "'><span class='calendar__daynumber'>" + i + "</span><div class='droppable-container'></div><a class='hide more-handler' href='#'>Más</a></div>").attr({'data-yy-mm-dd': `${year}-${month < 9 ? '0' : ''}${(month + 1)}-${i < 10 ? '0' : ''}${i}`});
+            let currDay = $("<div class='inline-block day" + (moment().get('date') == i && (moment().get('month') == month) ? ' today' : '') + "'><div class='dayheader'><span class='calendar__daynumber'>" + i + "</span><a class='hide inline-block more-handler' href='#'>Más</a></div><div class='droppable-container'></div></div>").attr({'data-yy-mm-dd': `${year}-${month < 9 ? '0' : ''}${(month + 1)}-${i < 10 ? '0' : ''}${i}`});
             if (weekDayControl > 6) {
                 monthBody.append(currWeekrow);
                 currWeekrow = weekRowWrapper.clone();
@@ -264,7 +289,7 @@ class Calendario {
      * @param el - DOM Object para verificar.
      */
     checkDroppableOverflow(el) {
-        if($(el).closest('.day').hasClass('calendar__dayover')){
+        if ($(el).closest('.day').hasClass('calendar__dayover')) {
             el = $('.day[data-yy-mm-dd=' + $(el).closest('.day').attr('data-yy-mm-dd') + ']').find('.droppable-container').get(0);
         }
         $(el).closest('.day').find('a').addClass('hide');
