@@ -296,11 +296,12 @@ class Calendario {
     addObject(obj, date) {
         if(typeof date == 'undefined' || date.length == 0){
             console.error('La no está definida para el objeto. El formato debe ser yyyy-mm-dd', obj);
-            return;
+            return false;
         }
         if (obj instanceof jQuery) {
             $('#calendario').find(`.day[data-yy-mm-dd=${date}]`).find('.droppable-container').append(obj.css({'cursor': 'pointer'}));
             this.checkDroppableOverflow($('#calendario').find(`.day[data-yy-mm-dd=${date}]`).find('.droppable-container').get(0));
+            return true;
         }
     }
 
