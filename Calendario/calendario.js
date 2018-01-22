@@ -22,6 +22,7 @@ var Calendario = /** @class */ (function () {
         }
         this.startDate = moment(fechaInicio + "T00:00:00.000Z", "YYYY-MM-DD");
         this.endDate = moment(fechaFin + "T00:00:00.000Z", "YYYY-MM-DD");
+        this.range = moment.range(this.startDate, this.endDate);
         //console.log(moment.min(this.startDate, this.endDate) == this.startDate);
         this.init();
     }
@@ -237,6 +238,14 @@ var Calendario = /** @class */ (function () {
             $('#calendario').find(".day[data-yy-mm-dd=" + date + "]").find('.droppable-container').append(obj.css({ 'cursor': 'pointer' }));
             this.checkDroppableOverflow($('#calendario').find(".day[data-yy-mm-dd=" + date + "]").find('.droppable-container').get(0));
             return true;
+        }
+    };
+    Calendario.prototype.canBeAdded = function (date) {
+        if (this.range.contains(date)) {
+            console.log('Listo');
+        }
+        else {
+            console.log('Paila');
         }
     };
     /**

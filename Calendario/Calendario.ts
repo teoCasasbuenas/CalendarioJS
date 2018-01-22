@@ -2,6 +2,7 @@ class Calendario {
 
     public startDate: any;
     public endDate: any;
+    public range: any;
 
     private defaultConfig: any = {
         days: [/*'Domingo', */'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes'/*, 'Sábado'*/],
@@ -28,6 +29,7 @@ class Calendario {
         }
         this.startDate = moment(fechaInicio + "T00:00:00.000Z", "YYYY-MM-DD");
         this.endDate = moment(fechaFin + "T00:00:00.000Z", "YYYY-MM-DD");
+        this.range = moment.range(this.startDate, this.endDate);
         //console.log(moment.min(this.startDate, this.endDate) == this.startDate);
         this.init();
     }
@@ -302,6 +304,14 @@ class Calendario {
             $('#calendario').find(`.day[data-yy-mm-dd=${date}]`).find('.droppable-container').append(obj.css({'cursor': 'pointer'}));
             this.checkDroppableOverflow($('#calendario').find(`.day[data-yy-mm-dd=${date}]`).find('.droppable-container').get(0));
             return true;
+        }
+    }
+
+    canBeAdded(date){
+        if(this.range.contains(date)){
+            console.log('Listo');
+        }else{
+            console.log('Paila');
         }
     }
 
