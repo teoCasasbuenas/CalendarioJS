@@ -309,9 +309,9 @@ class Calendario {
 
     canBeAdded(date){
         if(this.range.contains(date)){
-            console.log('Listo');
+            return true;
         }else{
-            console.log('Paila');
+            return false;
         }
     }
 

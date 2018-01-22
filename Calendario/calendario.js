@@ -242,10 +242,10 @@ var Calendario = /** @class */ (function () {
     };
     Calendario.prototype.canBeAdded = function (date) {
         if (this.range.contains(date)) {
-            console.log('Listo');
+            return true;
         }
         else {
-            console.log('Paila');
+            return false;
         }
     };
     /**
