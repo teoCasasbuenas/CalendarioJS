@@ -308,6 +308,7 @@ class Calendario {
     }
 
     canBeAdded(date){
+        date = moment(date, "YYYY-MM-DD");
         if(this.range.contains(date)){
             return true;
         }else{

@@ -241,6 +241,7 @@ var Calendario = /** @class */ (function () {
         }
     };
     Calendario.prototype.canBeAdded = function (date) {
+        date = moment(date, "YYYY-MM-DD");
         if (this.range.contains(date)) {
             return true;
         }
