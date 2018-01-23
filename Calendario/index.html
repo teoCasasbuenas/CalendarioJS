@@ -9,6 +9,7 @@
 </head>
 <input type="button" id="add" value="Agregar">
 <input type="button" id="remove" value="Remover">
+<input type="button" id="move" value="Mover #2">
 <div id="calendario" class="font0">
 </div>
 <script src="calendario.js"></script>
@@ -36,7 +37,7 @@
             obj6 = $("<div data-id-evento='tar6' class='evento' id='tar6' draggable='true'><p>#6 - Lecture Class: Cell structure and fundamentals of bla bla bla</p></div>"),
             obj7 = $("<div data-id-evento='tar7' class='evento' id='tar7' draggable='true'><p>#7 - Lecture Class: Cell structure and fundamentals of bla bla bla</p></div>");
         cal.addObject(obj, "2017-09-13");
-        cal.addObject(obj2, "2015-09-13");
+        cal.addObject(obj2, "2017-09-15");
         cal.addObject(obj3, "2017-09-13");
         cal.addObject(obj4, "2017-09-13");
         cal.addObject(obj5, "2015-09-13");
@@ -50,6 +51,9 @@
         $("#tar2").remove();
     });
 
+    $('#move').on('click', function (){
+        cal.moveFromTo("tar2", "2017-09-20");
+    });
 
     // cal.on('drop', function (target, el, fecha) {
     //     el.find('.fecha').html(fecha)

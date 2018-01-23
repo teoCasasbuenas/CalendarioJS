@@ -126,7 +126,6 @@ class Calendario {
 
 
     RegisterEvents() {
-        console.log('aqui');
         let that = this;
         // $('#calendario').on('click', '.day:not(.emptyday):not(.calendar__dayover)', function (evt){
         //     $('#calendario').trigger('dayclick');
@@ -307,6 +306,18 @@ class Calendario {
         }
     }
 
+    /**
+     *
+     * @param {string} from
+     * @param {string} to
+     * @param {string} selector
+     */
+    moveObjTo(dragDataSelector: string, to: string){
+        if(moment(to, "YYYY-MM-DD")){
+            $(`.day[data-yy-mm-dd=${to}]`).find('.droppable-container').append($(`[${this.config.dragData}=${dragDataSelector}]`));
+        }
+    }
+
     canBeAdded(date){
         date = moment(date, "YYYY-MM-DD");
         if(this.range.contains(date)){
@@ -324,7 +335,7 @@ class Calendario {
     checkDroppableOverflow(el) {
         if(!el || typeof el == 'undefined'){
 
-            console.error('El elemento no está definido');
+            console.warn('El elemento no está definido');
             return;
         }
         if ($(el).closest('.day').hasClass('calendar__dayover')) {
