@@ -173,7 +173,14 @@ class Calendario {
         $('.day').on('dayclick', that.DayClick);
     }
 
-
+    /**
+     *
+     * @param e
+     * @param target
+     * @param fecha
+     * @param callback
+     * @constructor
+     */
     DayClick(e, target, fecha, callback) {
         e.preventDefault();
         e.stopPropagation();
@@ -219,6 +226,11 @@ class Calendario {
         }
     }
 
+    /**
+     *
+     * @param year
+     * @param month
+     */
     drawMonth(year, month) {
         let initDay = this.startDate.get('date'),
             daysInMonth = this.daysInMonth(year, month),
@@ -280,6 +292,12 @@ class Calendario {
         //console.log(initDay, daysInMonth, this.startDate.get('month'));
     }
 
+    /**
+     *
+     * @param year
+     * @param month
+     * @returns {number}
+     */
     daysInMonth(year, month) {
         month = month + 1;
         var date = new Date(year, month, 0);
@@ -315,9 +333,15 @@ class Calendario {
     moveObjTo(dragDataSelector: string, to: string){
         if(moment(to, "YYYY-MM-DD")){
             $(`.day[data-yy-mm-dd=${to}]`).find('.droppable-container').append($(`[${this.config.dragData}=${dragDataSelector}]`));
+            this.checkDroppableOverflow($('#calendario').find(`.day[data-yy-mm-dd=${to}]`).find('.droppable-container').get(0));
         }
     }
 
+    /**
+     *
+     * @param date
+     * @returns {boolean}
+     */
     canBeAdded(date){
         date = moment(date, "YYYY-MM-DD");
         if(this.range.contains(date)){

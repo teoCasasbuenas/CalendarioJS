@@ -130,6 +130,14 @@ var Calendario = /** @class */ (function () {
         });
         $('.day').on('dayclick', that.DayClick);
     };
+    /**
+     *
+     * @param e
+     * @param target
+     * @param fecha
+     * @param callback
+     * @constructor
+     */
     Calendario.prototype.DayClick = function (e, target, fecha, callback) {
         e.preventDefault();
         e.stopPropagation();
@@ -172,6 +180,11 @@ var Calendario = /** @class */ (function () {
             });
         }
     };
+    /**
+     *
+     * @param year
+     * @param month
+     */
     Calendario.prototype.drawMonth = function (year, month) {
         var initDay = this.startDate.get('date'), daysInMonth = this.daysInMonth(year, month), 
         //initWeekDay = this.startDate.format('d'),
@@ -217,6 +230,12 @@ var Calendario = /** @class */ (function () {
         $('#calendario').append(monthWrapper);
         //console.log(initDay, daysInMonth, this.startDate.get('month'));
     };
+    /**
+     *
+     * @param year
+     * @param month
+     * @returns {number}
+     */
     Calendario.prototype.daysInMonth = function (year, month) {
         month = month + 1;
         var date = new Date(year, month, 0);
@@ -248,8 +267,14 @@ var Calendario = /** @class */ (function () {
     Calendario.prototype.moveObjTo = function (dragDataSelector, to) {
         if (moment(to, "YYYY-MM-DD")) {
             $(".day[data-yy-mm-dd=" + to + "]").find('.droppable-container').append($("[" + this.config.dragData + "=" + dragDataSelector + "]"));
+            this.checkDroppableOverflow($('#calendario').find(".day[data-yy-mm-dd=" + to + "]").find('.droppable-container').get(0));
         }
     };
+    /**
+     *
+     * @param date
+     * @returns {boolean}
+     */
     Calendario.prototype.canBeAdded = function (date) {
         date = moment(date, "YYYY-MM-DD");
         if (this.range.contains(date)) {
