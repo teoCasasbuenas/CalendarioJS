@@ -168,7 +168,9 @@ var Calendario = /** @class */ (function () {
                     $(this).find("[" + that.config.dragData + "=" + data + "]").css({ 'cursor': 'pointer' });
                     $('.droppable-container').removeClass('hover');
                     callback(this, $('[' + that.config.dragData + '=' + data + ']'), $(this).attr('data-yy-mm-dd'));
-                    that.checkDroppableOverflow(that.dragOrigin.find('.droppable-container').get(0));
+                    if (typeof that.dragOrigin != 'undefined') {
+                        that.checkDroppableOverflow(that.dragOrigin.find('.droppable-container').get(0));
+                    }
                     that.checkDroppableOverflow($(this).find('.droppable-container').get(0));
                 }
             });

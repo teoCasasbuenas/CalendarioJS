@@ -100,7 +100,6 @@ class Calendario {
         });
 
 
-
         $('#calendario').on('drop', '.day', function (evt) {
             evt.preventDefault();
             evt.stopPropagation();
@@ -113,7 +112,7 @@ class Calendario {
                 $(this).find(`[${that.config.dragData}=${data}]`).css({'cursor': 'pointer'});
                 $('.droppable-container').removeClass('hover');
                 // callback(this, $('[' + that.config.dragData + '=' + data + ']'), $(this).attr('data-yy-mm-dd'));
-                if(typeof that.dragOrigin != 'undefined'){
+                if (typeof that.dragOrigin != 'undefined') {
                     that.checkDroppableOverflow(that.dragOrigin.find('.droppable-container').get(0));
                 }
                 that.checkDroppableOverflow($(this).find('.droppable-container').get(0));
@@ -211,7 +210,9 @@ class Calendario {
                     $(this).find(`[${that.config.dragData}=${data}]`).css({'cursor': 'pointer'});
                     $('.droppable-container').removeClass('hover');
                     callback(this, $('[' + that.config.dragData + '=' + data + ']'), $(this).attr('data-yy-mm-dd'));
-                    that.checkDroppableOverflow(that.dragOrigin.find('.droppable-container').get(0));
+                    if (typeof that.dragOrigin != 'undefined') {
+                        that.checkDroppableOverflow(that.dragOrigin.find('.droppable-container').get(0));
+                    }
                     that.checkDroppableOverflow($(this).find('.droppable-container').get(0));
                 }
             });
@@ -315,7 +316,7 @@ class Calendario {
      * @param date
      */
     addObject(obj, date) {
-        if(typeof date == 'undefined' || date.length == 0){
+        if (typeof date == 'undefined' || date.length == 0) {
             console.error('La no está definida para el objeto. El formato debe ser yyyy-mm-dd', obj);
             return false;
         }
@@ -332,8 +333,8 @@ class Calendario {
      * @param {string} to
      * @param {string} selector
      */
-    moveObjTo(dragDataSelector: string, to: string){
-        if(moment(to, "YYYY-MM-DD")){
+    moveObjTo(dragDataSelector: string, to: string) {
+        if (moment(to, "YYYY-MM-DD")) {
             $(`.day[data-yy-mm-dd=${to}]`).find('.droppable-container').append($(`[${this.config.dragData}=${dragDataSelector}]`));
             this.checkDroppableOverflow($('#calendario').find(`.day[data-yy-mm-dd=${to}]`).find('.droppable-container').get(0));
         }
@@ -344,11 +345,11 @@ class Calendario {
      * @param date
      * @returns {boolean}
      */
-    canBeAdded(date){
+    canBeAdded(date) {
         date = moment(date, "YYYY-MM-DD");
-        if(this.range.contains(date)){
+        if (this.range.contains(date)) {
             return true;
-        }else{
+        } else {
             return false;
         }
     }
@@ -359,7 +360,7 @@ class Calendario {
      * @param el - DOM Object para verificar.
      */
     checkDroppableOverflow(el) {
-        if(!el || typeof el == 'undefined'){
+        if (!el || typeof el == 'undefined') {
 
             console.warn('El elemento no está definido');
             return;
