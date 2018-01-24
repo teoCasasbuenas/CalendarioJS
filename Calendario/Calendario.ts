@@ -391,4 +391,14 @@ class Calendario {
             $(el).closest('.day').find('a').addClass('hide');
         }
     }
+
+    massCheckOverflow(){
+        let lista = $('.droppable-container'),
+            that = this;
+        $.each(lista, function (key, val){
+            if($(val).children().length > 0){
+                that.checkDroppableOverflow($(val).get(0));
+            }
+        });
+    }
 }
