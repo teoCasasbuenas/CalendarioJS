@@ -190,7 +190,7 @@ var Calendario = /** @class */ (function () {
      * @param month
      */
     Calendario.prototype.drawMonth = function (year, month) {
-        var initDay = this.startDate.get('date'), daysInMonth = this.daysInMonth(year, month), 
+        var initDay = this.startDate.get('date'), endDay = this.endDate.get('date'), daysInMonth = this.daysInMonth(year, month), 
         //initWeekDay = this.startDate.format('d'),
         initWeekDay = moment({ year: year, month: month, day: 1 }).format('d'), 
         //Templating variables.
@@ -211,7 +211,7 @@ var Calendario = /** @class */ (function () {
             initWeekDay--;
         }
         while (i <= daysInMonth) {
-            var currDay = $("<div class='inline-block day" + (moment().get('date') == i && (moment().get('month') == month) ? ' today' : '') + "'><div class='dayheader'><span class='calendar__daynumber'>" + i + "</span><a class='hide inline-block more-handler' href='#'>Más</a></div><div class='droppable-container'></div></div>").attr({ 'data-yy-mm-dd': year + "-" + (month < 9 ? '0' : '') + (month + 1) + "-" + (i < 10 ? '0' : '') + i });
+            var currDay = $("<div class='inline-block day" + (moment().get('date') == i && (moment().get('month') == month) ? ' today' : ((this.startDate.get('month') == month && initDay > i) || (this.endDate.get('month') == month && endDay < i)) ? ' prevmonth emptyday' : '') + "'><div class='dayheader'><span class='calendar__daynumber'>" + i + "</span><a class='hide inline-block more-handler' href='#'>Más</a></div>" + (((this.startDate.get('month') == month && initDay > i) || (this.endDate.get('month') == month && endDay < i)) ? '' : '<div class=\'droppable-container\'></div>') + "</div>").attr({ 'data-yy-mm-dd': year + "-" + (month < 9 ? '0' : '') + (month + 1) + "-" + (i < 10 ? '0' : '') + i });
             if (weekDayControl > 6) {
                 monthBody.append(currWeekrow);
                 currWeekrow = weekRowWrapper.clone();
