@@ -171,7 +171,7 @@ class Calendario {
             });
         });
 
-        $('.day').on('dayclick', that.DayClick);
+        // $('.day').on('dayclick', that.DayClick);
     }
 
     /**
@@ -218,15 +218,16 @@ class Calendario {
             });
         }
 
-        if (string === 'dayclick') {
-            $('#calendario').on('click', '.droppable-container'/*'.day:not(.emptyday):not(.calendar__dayover):not(.more-handler)'*/, function (evt) {
-                evt.stopPropagation();
-                evt.preventDefault();
-                let target = this,
-                    fecha = $(this).closest('.day').attr('data-yy-mm-dd');
-                $(this).trigger('dayclick', [target, fecha, callback]);
-            });
-        }
+        //Removido por choque con otros eventos.
+        // if (string === 'dayclick') {
+        //     $('#calendario').on('click', '.droppable-container'/*'.day:not(.emptyday):not(.calendar__dayover):not(.more-handler)'*/, function (evt) {
+        //         evt.stopPropagation();
+        //         evt.preventDefault();
+        //         let target = this,
+        //             fecha = $(this).closest('.day').attr('data-yy-mm-dd');
+        //         $(this).trigger('dayclick', [target, fecha, callback]);
+        //     });
+        // }
     }
 
     /**
